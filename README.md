@@ -1,4 +1,4 @@
-# three-tier-eks-iac
+# three-tier-terrafrom-eks-gitops
 - this project 
 ## Structure 
 ![project-structure](./docs/imgs/project_structure.png)
