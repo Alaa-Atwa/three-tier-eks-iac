@@ -24,19 +24,19 @@ jobs:
       # the backend image
       - name: build, tag the backend image, then push it to ECR
         env:
-          ECR_REGISTERY: ${{ steps.login-ecr.outputs.reigstery }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.reigstry }}
           ECR_REPOSITORY: backend-app
           IMAGE_TAG: ${{ github.sha }} # a unique build tag instead of using latest
         run: |
-          docker build -t $ECR_REGISTERY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       # the frontend image
       - name: build, tag the backend image, then push it to ECR
         env:
-          ECR_REGISTERY: ${{ steps.login-ecr.outputs.reigstery }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.reigstry }}
           ECR_REPOSITORY: frontend-app
           IMAGE_TAG: ${{ github.sha }} # a unique build tag instead of using latest
         run: |
-          docker build -t $ECR_REGISTERY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
