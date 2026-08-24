@@ -9,6 +9,7 @@ jobs:
       - name: checkout (get the code onto the runner)
         uses: actions/checkout@v4
 
+      # configure aws access
       - name: configure AWS credential
         uses: aws-actions/configure-aws-credentials@v4
         with:
