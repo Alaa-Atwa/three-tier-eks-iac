@@ -1,0 +1,44 @@
+name: ci for the app
+on:
+  push:
+    branches: [main]
+# Permissions required for OIDC requested tokens
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout (get the code onto the runner)
+        uses: actions/checkout@v4
+
+      - name: configure AWS credential via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
+          aws-region: us-east-1
+
+      - name: ECR login
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # the backend image
+      - name: build, tag the backend image, then push it to ECR
+        env:
+          ECR_REGISTERY: ${{ steps.login-ecr.outputs.reigstery }}
+          ECR_REPOSITORY: backend-app
+          IMAGE_TAG: ${{ github.sha }} # a unique build tag instead of using latest
+        run: |
+          docker build -t $ECR_REGISTERY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      # the frontend image
+      - name: build, tag the backend image, then push it to ECR
+        env:
+          ECR_REGISTERY: ${{ steps.login-ecr.outputs.reigstery }}
+          ECR_REPOSITORY: frontend-app
+          IMAGE_TAG: ${{ github.sha }} # a unique build tag instead of using latest
+        run: |
+          docker build -t $ECR_REGISTERY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
