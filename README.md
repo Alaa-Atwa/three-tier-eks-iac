@@ -3,6 +3,8 @@
 ## Structure 
 ![project-structure](./docs/imgs/project_structure.png)
 
+---
+
 ## Flow 
 
 ```
@@ -51,6 +53,8 @@ ECR ── holds frontend & backend images
 IAM ── IRSA roles scoped per-service (least privilege)
 S3 + DynamoDB ── Terraform remote state + lock
 ```
+---
+
 **repo structure**
 ```
 three-tier-eks-iac/
@@ -64,7 +68,7 @@ three-tier-eks-iac/
 │   └── environments/dev/
 ├── kubernetes/          
 ├── helm/                 
-├── gitops/  or  argocd/   
+├── argocd/   
 ├── monitoring/
 ├── .github/workflows/
 ├── docs/    

@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017" # default prot for mongo, but I can drop it totally.
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      # db.js reads MONGO_CONN_STR from the environmen , a fix if the app silently fails to connect to the database.
+      MONGO_CONN_STR: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@db:27017/tasks?authSource=admin
+      # mongodb is the db service container name.
+      USE_DB_AUTH: "true"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_BACKEND_URL: http://localhost:8080/api/tasks
+        #with this line the build arg will get the value from compose
+    ports:
+      - "3000:80"
+      # nginx listens on port 80 inside the container, we map it to 3000 on the host.
+    depends_on:
+      - backend
