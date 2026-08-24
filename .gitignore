@@ -1,4 +1,4 @@
 app/.env
 app/frontend/node_modules/*
 app/backend/node_modules/*
-.DC_Store
+.DS_Store
