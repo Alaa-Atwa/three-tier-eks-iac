@@ -9,14 +9,13 @@ jobs:
       - name: checkout (get the code onto the runner)
         uses: actions/checkout@v4
 
-      # configure aws access
+      # configure aws access (using iam user creds)
       - name: configure AWS credential
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-          role-session-name: GitHubActionsCISession
 
       - name: ECR login
         id: login-ecr
