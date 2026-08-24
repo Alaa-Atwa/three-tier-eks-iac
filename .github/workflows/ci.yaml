@@ -24,8 +24,8 @@ jobs:
       # the backend image
       - name: build, tag the backend image, then push it to ECR
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.reigstry }}
-          ECR_REPOSITORY: 970460117753.dkr.ecr.us-east-1.amazonaws.com/backend-app
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: backend-app
           IMAGE_TAG: ${{ github.sha }} # a unique build tag instead of using latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG app/backend
@@ -34,8 +34,8 @@ jobs:
       # the frontend image
       - name: build, tag the backend image, then push it to ECR
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.reigstry }}
-          ECR_REPOSITORY: 970460117753.dkr.ecr.us-east-1.amazonaws.com/frontend-app
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: frontend-app
           IMAGE_TAG: ${{ github.sha }} # a unique build tag instead of using latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG app/frontend
