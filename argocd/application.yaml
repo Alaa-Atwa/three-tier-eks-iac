@@ -1,0 +1,35 @@
+# using the helm with argocd 
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: three-tier
+  namespace: argocd
+
+spec:
+  project: default
+
+  # where to pull (from helm directory )
+  source:
+    repoURL: https://github.com/Alaa-Atwa/three-tier-terraform-eks-gitops.git
+    targetRevision: main
+    path: helm
+
+    helm:
+      valueFiles:
+        - values.yaml
+
+  # where to apply 
+  destination:
+    server: https://kubernetes.default.svc
+    # apply where the argocd itself is running 
+    namespace: three-tier
+
+  syncPolicy: {}
+  # no automatic deployment yet 
+  # need to click sync when out of sync 
+
+# to automate deploy 
+  # syncPolicy:
+  # automated:
+  #   prune: true
+  #   selfHeal: true

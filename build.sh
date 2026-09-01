@@ -64,7 +64,76 @@ aws eks update-kubeconfig --region us-east-1 --name dev-eks
 aws ecr describe-repositories   # list repos 
 aws ecr describe-images --repsoitory-name frontend-app 
 
-
+#===============================================================================
+# helm 
+#===============================================================================
 # create helm chart
 cd helm 
-helm create my-app 
+helm create my-app  # it will create the template files.
+
+# after adding all helm files and configure values:
+helm lint ./helm   # check for common problems 
+helm template three-tier ./helm  # render but don't apply  (replace templates with actual values from values.yaml)
+
+# install once the rendering from helm template looks right.
+# at install time provide your secrets with --set 
+helm install three-tier ./helm -n three-tier --set backend.mongoConnStr='mongodb://user:pass@host:27017/tasks?authSource=admin'
+
+
+# inspect
+helm list -n three-tier 
+helm status three-tier -n three-tier
+kubectl get all -n three-tier
+
+
+# to verify that helm is controlling it :
+# change replicas in values to 3 
+# then 
+helm upgrade three-tier ./helm -n three-tier 
+
+k get all -n three-tier 
+
+# check history and rollback to another version 
+helm history three-tier -n three-tier
+helm rollback three-tier 1 -n three-tier
+
+# helm commands in a glance 
+helm lint ./helm
+helm template three-tier ./helm
+helm install three-tier ./helm -n three-tier
+helm list -n three-tier
+helm status three-tier -n three-tier
+helm upgrade three-tier ./helm -n three-tier
+helm history three-tier -n three-tier
+helm rollback three-tier <revision> -n three-tier
+
+#===============================================================================
+# Argo CD 
+#===============================================================================
+
+# 1. create the namespace 
+kubectl create namespace argocd 
+
+# 2. add the argo helm repo
+helm repo add argo https://argoproj.github.io/argo-helm
+
+# 3. update 
+helm repo update 
+
+# 4. install argocd 
+helm install argocd argo/argo-cd -n argocd 
+
+# 5. forward the traffic (a temp solution before using ingress)
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+# 6. access the ui 
+browse --> localhost:8080
+
+# 7. write the application.yaml file and deploy it 
+kubectl apply -f argocd/application.yaml
+
+
+# 8. check status 
+kubectl get applications -n argocd
+
+# 9. apply some changes in helm/values.yaml 

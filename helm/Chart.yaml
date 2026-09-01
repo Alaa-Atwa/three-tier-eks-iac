@@ -1,0 +1,7 @@
+# metadata for the chart 
+apiVersion: v2   # helm "chart api" version  
+name: three-tier 
+description: helm chart for the three tier app 
+type: application  # the chart deploys an application type
+version: 0.1.0     # chart version 
+appVersion: "1.0.0"

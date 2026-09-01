@@ -179,3 +179,36 @@ Give a specific workload AWS permissions.
                                 ▼
                          AWS permissions
 ```
+
+## gitops flow 
+
+Developer
+    │
+    ▼
+Git push
+    │
+    ▼
+GitHub Actions
+    │
+    ├── Test
+    ├── Build Docker image
+    ├── Trivy scan
+    └── Push image → ECR
+              │
+              ▼
+        new image tag
+              │
+              ▼
+        helm/values.yaml
+              │
+              ▼
+          Git commit
+              │
+              ▼
+           Argo CD
+              │
+              ▼
+       helm template/render
+              │
+              ▼
+             EKS
