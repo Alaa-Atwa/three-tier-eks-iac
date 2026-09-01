@@ -16,7 +16,7 @@ backend:
       memory: "256Mi"
 
 frontend:
-  replicaCount: 3
+  replicaCount: 2
   port: 80
   image:
     repository: 970460117753.dkr.ecr.us-east-1.amazonaws.com/frontend-app
