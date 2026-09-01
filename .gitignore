@@ -1,4 +1,5 @@
 app/.env
 app/frontend/node_modules/*
 app/backend/node_modules/*
+terraform/envs/dev/.terraform/*
 .DS_Store
