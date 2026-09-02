@@ -2,6 +2,11 @@ name: ci for the app
 on:
   push:
     branches: [main]
+    paths-ignore: # loop prevention for argocd ( to prevent triggering when this workflow runs)
+      - "helm/values.yaml"
+permissions: # give the bot (in argocd part) permission to push back to the repo
+  contents: write
+  # and change your GitHub Actions workflow permissions setting at the repo level (Settings → Actions → General → Workflow permissions) needs "Read and write permissions" enabled
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,3 +45,26 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG app/frontend
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      # update the helm values.yaml with the new tags
+
+      # ================================================================================
+      # CD : argocd part
+      # ================================================================================
+      - name: install yq # yaml query tool to subtitude values
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: put image tags in helm/values.yaml
+        run: |
+          yq -i '.backend.image.tag = "${{ github.sha }}"' helm/values.yaml
+          yq -i '.frontend.image.tag = "${{ github.sha }}"' helm/values.yaml
+
+      - name: commit and push the values.yaml change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add helm/values.yaml
+          git diff --cached --quiet || git commit -m "ci: put image tags inside ${{ github.sha }} [skip ci]"
+          git push

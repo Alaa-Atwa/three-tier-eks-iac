@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
 
-  # where to pull (from helm directory )
+  # where to pull ? (from helm directory )
   source:
     repoURL: https://github.com/Alaa-Atwa/three-tier-terraform-eks-gitops.git
     targetRevision: main
@@ -24,12 +24,14 @@ spec:
     # apply where the argocd itself is running 
     namespace: three-tier
 
-  syncPolicy: {}
+  # syncPolicy: {}
   # no automatic deployment yet 
   # need to click sync when out of sync 
 
-# to automate deploy 
-  # syncPolicy:
-  # automated:
-  #   prune: true
-  #   selfHeal: true
+# to automate deploy (sync automatically) 
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
